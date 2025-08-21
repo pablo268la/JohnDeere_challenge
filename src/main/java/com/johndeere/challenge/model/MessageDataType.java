@@ -17,7 +17,7 @@ public enum MessageDataType {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Tipo de dato no soportado: " + value);
+        throw new IllegalArgumentException("Data type not supported: " + value);
     }
 
     @Override

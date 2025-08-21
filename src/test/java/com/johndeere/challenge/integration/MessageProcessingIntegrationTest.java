@@ -103,7 +103,7 @@ class MessageProcessingIntegrationTest {
         assertEquals(1, receivedOutboundMessage.sequenceNumber());
         assertEquals(1, receivedOutboundMessage.machineId());
 
-        assertTrue(messageService.getMessageById(testMessage.id()).sessionGuid().equals(currentTestSessionGuid),
+        assertNotNull(messageService.getMessagesBySessionId(testMessage.sessionGuid()).getFirst(),
                 "Message should be persisted in MongoDB");
     }
 
@@ -201,10 +201,8 @@ class MessageProcessingIntegrationTest {
         assertEquals(currentTestSessionGuid, receivedOutboundMessage.sessionGuid());
         assertEquals(2, receivedOutboundMessage.sequenceNumber());
 
-        assertTrue(messageService.getMessageById(firstMessage.id()).sessionGuid().equals(currentTestSessionGuid),
-                "First message should be persisted in MongoDB");
-        assertTrue(messageService.getMessageById(secondMessage.id()).sessionGuid().equals(currentTestSessionGuid),
-                "Second message should be persisted in MongoDB");
+        assertEquals(2, messageService.getMessagesBySessionId(firstMessage.sessionGuid()).size(),
+                "Should have two messages in MongoDB for the same session");
 
     }
 

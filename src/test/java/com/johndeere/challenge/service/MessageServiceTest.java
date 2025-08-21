@@ -15,7 +15,6 @@ import org.openapitools.client.api.PetApi;
 import org.openapitools.client.model.Pet;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,7 +62,7 @@ class MessageServiceTest {
 
         when(machineConfig.getWhitelist()).thenReturn(List.of(1, 2, 3));
         when(petApi.getPetById(1L)).thenReturn(new Pet());
-        when(messageRepository.findById(any())).thenReturn(Optional.empty());
+        when(messageRepository.findBySessionGuid(any())).thenReturn(List.of());
 
         boolean result = messageService.consumeMessage(testMessage);
 
@@ -76,7 +75,7 @@ class MessageServiceTest {
 
         when(machineConfig.getWhitelist()).thenReturn(List.of(2, 3, 4)); // Machine 1 not in whitelist
         when(petApi.getPetById(1L)).thenReturn(new Pet());
-        when(messageRepository.findById(any())).thenReturn(Optional.empty());
+        when(messageRepository.findBySessionGuid(any())).thenReturn(List.of());
 
 
         boolean result = messageService.consumeMessage(testMessage);
@@ -99,8 +98,8 @@ class MessageServiceTest {
 
         when(machineConfig.getWhitelist()).thenReturn(List.of(1, 2, 3));
         when(petApi.getPetById(1L)).thenReturn(new Pet());
-        when(messageRepository.findById(any()))
-                .thenReturn(Optional.of(existingMessage));
+        when(messageRepository.findBySessionGuid(any()))
+                .thenReturn(List.of(existingMessage));
 
 
         boolean result = messageService.consumeMessage(testMessage);
@@ -123,8 +122,8 @@ class MessageServiceTest {
 
         when(machineConfig.getWhitelist()).thenReturn(List.of(1, 2, 3));
         when(petApi.getPetById(1L)).thenReturn(new Pet());
-        when(messageRepository.findById(any()))
-                .thenReturn(Optional.of(existingMessage));
+        when(messageRepository.findBySessionGuid(any()))
+                .thenReturn(List.of(existingMessage));
 
 
         boolean result = messageService.consumeMessage(testMessage);

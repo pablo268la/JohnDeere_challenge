@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.api.PetApi;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -59,12 +60,14 @@ public class MessageService {
     }
 
     private boolean isMessageNotDuplicate(Message message) {
-        Message existingMessage = getMessageById(message.sessionGuid());
-        if (existingMessage == null) {
+        List<Message> existingMessages = getMessagesBySessionId(message.sessionGuid());
+        if (existingMessages.isEmpty()) {
             return true;
         }
 
-        boolean isDuplicate = existingMessage.sequenceNumber() == message.sequenceNumber();
+        boolean isDuplicate = existingMessages.stream()
+                .anyMatch(existingMessage ->
+                        existingMessage.sequenceNumber() == message.sequenceNumber());
 
         return !isDuplicate;
     }
@@ -80,7 +83,7 @@ public class MessageService {
         }
     }
 
-    public Message getMessageById(UUID id) {
-        return messageRepository.findById(id).orElse(null);
+    public List<Message> getMessagesBySessionId(UUID sessionId) {
+        return messageRepository.findBySessionGuid(sessionId);
     }
 }
